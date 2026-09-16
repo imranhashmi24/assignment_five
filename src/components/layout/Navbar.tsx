@@ -1,3 +1,4 @@
+import { useState } from "react";
 import hamburgerIcon from "../../assets/hamburger.png";
 import logoImg from "../../assets/logo-text.png";
 
@@ -13,11 +14,24 @@ interface NavbarProps {
 }
 
 const Navbar = ({ activeTab, setActiveTab, navLinks }: NavbarProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMobileLinkClick = (label: string) => {
+    setActiveTab(label);
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-white">
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <div className="flex w-1/3 items-center">
-          <button type="button" className="md:hidden" aria-label="Menu">
+          <button
+            type="button"
+            className="md:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
             <img src={hamburgerIcon} alt="" className="h-6 w-6" />
           </button>
 
@@ -60,6 +74,26 @@ const Navbar = ({ activeTab, setActiveTab, navLinks }: NavbarProps) => {
           </button>
         </div>
       </nav>
+
+      {isMenuOpen && (
+        <ul className="flex flex-col gap-1 border-t border-slate-100 bg-white px-6 py-4 md:hidden">
+          {navLinks.map((link) => (
+            <li key={link.label}>
+              <a
+                href={link.href}
+                onClick={() => handleMobileLinkClick(link.label)}
+                className={`block rounded-lg px-3 py-2 text-sm font-semibold ${
+                  activeTab === link.label
+                    ? "text-pink-500"
+                    : "text-slate-500"
+                }`}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </header>
   );
 };
